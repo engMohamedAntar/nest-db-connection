@@ -9,8 +9,8 @@ import * as Joi from 'joi';
   imports: [
     ConfigModule.forRoot({
       validationSchema: Joi.object({
-        PORT: Joi.number().required(),
-      }),
+        PORT: Joi.number().required()
+      })
     }),
     UsersModule,
   ],
