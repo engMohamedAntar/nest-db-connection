@@ -3,21 +3,11 @@ import { UsersModule } from './users/users.module';
 import { APP_PIPE } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/user.entity';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'boghdady',
-      password: 'pass123',
-      database: 'nestjs-db', 
-      entities: [User],
-      synchronize: true,
-    }),
+    DatabaseModule,
     ConfigModule.forRoot({
       validationSchema: Joi.object({
         PORT: Joi.number().required(),
