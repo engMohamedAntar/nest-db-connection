@@ -4,6 +4,7 @@ import { APP_PIPE } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './users/user.entity';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'boghdady',
       password: 'pass123',
       database: 'nestjs-db', 
-      entities: [],
+      entities: [User],
       synchronize: true,
     }),
     ConfigModule.forRoot({

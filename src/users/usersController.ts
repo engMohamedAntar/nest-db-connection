@@ -7,7 +7,6 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
-  ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -22,7 +21,7 @@ export class UsersController {
 
   @Get()
   async find(): Promise<User[]> {
-    return await this.userService.findUsers();
+    return await this.userService.findUsers(); 
   }
 
   @Get(':id')
