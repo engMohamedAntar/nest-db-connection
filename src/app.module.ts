@@ -1,3 +1,4 @@
+//app.module.ts
 import { Module, ValidationPipe } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { APP_PIPE } from '@nestjs/core';
