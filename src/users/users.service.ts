@@ -1,46 +1,44 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UserEntity } from './user.entity';
+import { User } from './user.entity';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { v4 as uuid } from 'uuid';
-import { UserResponseDto } from './dtos/user-response.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-  private users: UserEntity[] = [];
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {}
 
-  findUsers(): UserEntity[] {
-    return this.users;
+  async findUsers(): Promise<User[]> {
+    return this.userRepository.find();
   }
 
-  findUserById(id: string): UserResponseDto {
-    const user = this.users.find((user) => user.id === id);
+  async findUserById(id: number): Promise<User> {
+    const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw new NotFoundException(`Not found user ${id}`);
     }
-    return new UserResponseDto(user);
+    return user;
   }
 
-  createUser(createUserDto: CreateUserDto): UserResponseDto {
-    const newUser: UserEntity = {
-      ...createUserDto,
-      id: uuid(),
-    };
-    this.users.push(newUser);
-
-    return new UserResponseDto(newUser);
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const new_User = this.userRepository.save(createUserDto);
+    return new_User;
   }
 
-  updateUser(id: string, updateUserDto: UpdateUserDto): UserEntity {
-    // 1) find the element index that we want to update
-    const index = this.users.findIndex((user) => user.id === id);
-    // 2) update the element
-    this.users[index] = { ...this.users[index], ...updateUserDto };
+  async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user_to_update = await this.userRepository.findOneBy({ id });
+    if (!user_to_update)
+      throw new NotFoundException(`No user found for this id ${id}`);
 
-    return this.users[index];
+    const updated_user = { ...user_to_update, ...updateUserDto };
+    await this.userRepository.save(updated_user);
+    return updated_user;
   }
 
-  deleteUser(id: string): void {
-    this.users = this.users.filter((user) => user.id !== id);
+  async deleteUser(id: number): Promise<void> {
+    await this.userRepository.delete({ id });
   }
 }
