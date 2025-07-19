@@ -3,7 +3,7 @@ version: "3.8"
 services:
   postgres:
     image: postgres:13.1
-    container_name: nestjs-database-connection-postgres-db
+    container_name: nestjs-db-connection-postgres-db
     restart: always
     environment:
       POSTGRES_USER: boghdady
@@ -13,13 +13,22 @@ services:
       - nestjs_postgres_db:/data/postgres
     ports:
       - 5432:5432
+  mongodb:
+    image: mongo:7.0.21
+    container_name: nestjs-db-connection-mongo-db
+    restart: always
+    volumes:
+      - nestjs_mongo_db:/data/db
+    ports:
+      - 27017:27017 
 
   adminer:
     image: adminer
     container_name: nestjs-database-connection-adminer
     restart: always
     ports:
-      - 8080:8080
+      - 8081:8080
 
 volumes:
   nestjs_postgres_db:
+  nestjs_mongo_db:
