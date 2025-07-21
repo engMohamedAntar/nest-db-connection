@@ -6,53 +6,51 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { UserEntity } from './user.entity';
 import { UserService } from './users.service';
-import { UserResponseDto } from './dtos/user-response.dto';
+import { USER } from 'src/schemas/user.schema';
+import { MongoIdDto } from './dtos/user-id.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  find(): UserEntity[] {
+  async find(): Promise<USER[]> {
     return this.userService.findUsers();
   }
 
-  @Get(':id')
-  findOne(
-    @Param('id', ParseUUIDPipe)
-    id: string,
-  ): UserResponseDto {
-    return this.userService.findUserById(id);
-  }
+@Get(':id')
+async findOne(
+  @Param() params: MongoIdDto,
+): Promise<USER> {
+  return this.userService.findUserById(params.id);
+}
 
   @Post()
-  create(
+  async create(
     @Body()
     createUserDto: CreateUserDto,
-  ): UserResponseDto {
-    return this.userService.createUser(createUserDto);
+  ): Promise<USER> {
+    return await this.userService.createUser(createUserDto);
   }
 
   @Patch(':id')
-  update(
-    @Param('id', ParseUUIDPipe) id: string,
+  async update(
+    @Param('id') id: MongoIdDto,
     @Body()
     updateUserDto: UpdateUserDto,
-  ) {
+  ): Promise<USER> {
     return this.userService.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    this.userService.deleteUser(id);
+  async remove(@Param('id') id: MongoIdDto): Promise<void> {
+    await this.userService.deleteUser(id);
   }
 }
