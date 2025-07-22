@@ -41,16 +41,16 @@ async findOne(
 
   @Patch(':id')
   async update(
-    @Param('id') id: MongoIdDto,
+    @Param() parmas: MongoIdDto,
     @Body()
     updateUserDto: UpdateUserDto,
   ): Promise<USER> {
-    return this.userService.updateUser(id, updateUserDto);
+    return this.userService.updateUser(parmas.id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: MongoIdDto): Promise<void> {
-    await this.userService.deleteUser(id);
+  async remove(@Param() params: MongoIdDto): Promise<void> {
+    await this.userService.deleteUser(params.id);
   }
 }

@@ -4,7 +4,6 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { USER } from 'src/schemas/user.schema';
-import { MongoIdDto } from './dtos/user-id.dto';
 
 @Injectable()
 export class UserService {
@@ -28,12 +27,12 @@ export class UserService {
     return newUser;
   }
 
-  async updateUser(id: MongoIdDto, updateUserDto: UpdateUserDto): Promise<USER> {
+  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<USER> {
     const updated_user= await this.userModel.findByIdAndUpdate(id, updateUserDto, {new:true});    
     return updated_user;
   }
 
-  async deleteUser(id: MongoIdDto): Promise<void> {
+  async deleteUser(id: string): Promise<void> {
    await this.userModel.findByIdAndDelete(id);
   }
 }
