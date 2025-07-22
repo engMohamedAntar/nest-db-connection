@@ -13,7 +13,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserService } from './users.service';
 import { USER } from 'src/schemas/user.schema';
-import { MongoIdDto } from './dtos/user-id.dto';
+import { ParseMongoIDPipe } from 'src/pipes/mongo-id.pipe';
 
 @Controller('users')
 export class UsersController {
@@ -26,9 +26,9 @@ export class UsersController {
 
 @Get(':id')
 async findOne(
-  @Param() params: MongoIdDto,
+  @Param('id', ParseMongoIDPipe) id: string,
 ): Promise<USER> {
-  return this.userService.findUserById(params.id);
+  return this.userService.findUserById(id);
 }
 
   @Post()
@@ -41,16 +41,16 @@ async findOne(
 
   @Patch(':id')
   async update(
-    @Param() parmas: MongoIdDto,
+    @Param('id', ParseMongoIDPipe) id: string,
     @Body()
     updateUserDto: UpdateUserDto,
   ): Promise<USER> {
-    return this.userService.updateUser(parmas.id, updateUserDto);
+    return this.userService.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param() params: MongoIdDto): Promise<void> {
-    await this.userService.deleteUser(params.id);
+  async remove(@Param('id', ParseMongoIDPipe) id:string ): Promise<void> {
+    await this.userService.deleteUser(id);
   }
 }
